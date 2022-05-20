@@ -7,14 +7,18 @@ import sys
 import json
 import dendropy
 
-from opentree import OT
-from opentree import annotations
+# from opentree import OT
+from opentree.annotations import *
+# from annotations import write_itol_heatmap
+
+
 
 
 def parse_args():
     parser = argparse.ArgumentParser(prog='make itol annotations', \
         description='make itol annotations for ip data')
     parser.add_argument('--csv', help='csv file with AMR gene values.')
+    parser.add_argument('--amr_locus', default='', help='csv file with AMR gene values.')
     # parser.add_argument('--output_file', default='converted_tree.tre', help='newick phylogeny file.')
     return parser.parse_args()
 
@@ -24,8 +28,10 @@ def main():
     csv_contents = pd.read_csv(args.csv)
 
     gene_dict = make_gene_dict(csv_contents)
+    # print(gene_dict)
 
-    # write_itol_heatmap()
+    if len(args.amr_locus) > 0:
+        write_itol_heatmap('AMR_test_heatmap.txt', args.amr_locus, 'presence', gene_dict, args.amr_locus)
 
 
 def make_gene_dict(csv_contents):
@@ -81,6 +87,7 @@ def make_gene_dict(csv_contents):
         output[taxon_id] = isolate_dict
 
     # print(output)
+    return output
 
 
 
